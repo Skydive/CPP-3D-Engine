@@ -1,0 +1,48 @@
+CC := g++
+CPPVERSION = -std=c++1y
+
+PROJECT_BINDIR := bin/linux
+PROJECT_LIBDIR := lib/linux
+PROJECT_INCDIR := inc/linux
+PROJECT_CFLAGS := $(CPPVERSION) -g -pipe -fPIC
+PROJECT_LFLAGS := -pipe
+
+# Engine
+ENGINE_NAME := Engine
+ENGINE_OBJDIR := obj/linux/$(ENGINE_NAME)
+ENGINE_SRCDIR := src/$(ENGINE_NAME)
+
+ENGINE_CFLAGS := -Wall $(PROJECT_CFLAGS)
+ENGINE_LFLAGS := -lGLU -lGL -lglfw -lGLEW -lopenal -lalut -lfreeimage -lassimp -shared $(PROJECT_LFLAGS)
+
+ENGINE_CPP := $(wildcard $(ENGINE_SRCDIR)/*.cpp)
+ENGINE_OBJ := $(addprefix $(ENGINE_OBJDIR)/,$(notdir $(ENGINE_CPP:.cpp=.o)))
+ENGINE_OUT := $(PROJECT_BINDIR)/lib$(ENGINE_NAME).so
+
+# Game
+GAME_NAME := Game
+GAME_OBJDIR := obj/linux/$(GAME_NAME)
+GAME_SRCDIR := src/$(GAME_NAME)
+
+GAME_CFLAGS := -Wall $(PROJECT_CFLAGS)
+GAME_LFLAGS := $(PROJECT_LFLAGS) -Wl,-rpath '-Wl,\$\$ORIGIN'
+GAME_INCDIRS := $(ENGINE_SRCDIR)
+
+GAME_CPP := $(wildcard $(GAME_SRCDIR)/*.cpp)
+GAME_OBJ := $(addprefix $(GAME_OBJDIR)/,$(notdir $(GAME_CPP:.cpp=.o)))
+GAME_OUT := $(PROJECT_BINDIR)/$(GAME_NAME)
+
+
+all: Engine Game
+
+Engine: $(ENGINE_OBJ)
+	$(CC) $(ENGINE_OBJ) -o $(ENGINE_OUT) -L $(PROJECT_LIBDIR) $(ENGINE_LFLAGS)
+
+$(ENGINE_OBJDIR)/%.o: $(ENGINE_SRCDIR)/%.cpp
+	$(CC) -c $< -o $@ $(ENGINE_CFLAGS) -I $(PROJECT_INCDIR)
+
+Game: $(GAME_OBJ)
+	$(CC) $(GAME_OBJ) -o $(GAME_OUT) $(GAME_LFLAGS) -L $(PROJECT_BINDIR) -l$(ENGINE_NAME) -Wl,-rpath=.
+
+$(GAME_OBJDIR)/%.o: $(GAME_SRCDIR)/%.cpp
+	$(CC) -c $< -o $@ $(GAME_CFLAGS) -I $(GAME_INCDIRS) -I $(PROJECT_INCDIR)
