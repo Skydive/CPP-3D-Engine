@@ -1,101 +1,128 @@
-# CPP-2D-Engine
-## Current Version: $ENGINE_VERSION
-A work in development, to say the least.
+# CPP-3D-Engine
+A project started in 2015 to overcome the boredom of the summer holidays. It uses a very similar
+class-heirarchy system to that of Unreal Engine 4 and the Unity Game Engine, most notably the further
+degree of abstraction between Entities and Components.
 
-Compile using the GNU Compiler Collection (GCC) or CodeBlocks.
+This is a work in development to say the least. I've never fully had the motivation to code something
+substantial with this Engine. Yet it still exists as a demonstration of how much can be accomplished
+without a game engine.
 
-### DLL Dependencies:
-- Engine.dll
-- FreeImage.dll
-- glew32.dll
-- libgcc_s_dw2-1.dll
-- libstdc++-6.dll
-- SDL2.dll
+Compile using the GNU Compiler Collection (GCC).
 
+# Dependencies:
+- opengl
+- glew
+- glfw3
+- glm
+- openal
+- freealut
+- freeimage
+- assimp
 
 ## Commandlines for compilation:
-### Windows:
-	mingw32-make -f *PATH TO MAKEFILE*
 ### Linux:
-	make -f *PATH TO MAKEFILE*
+	make
 
 ### TODO (Non-exhaustive list):
-- Engine (Major and Significant):
-  - Config.h: Line 10: Somehow support writing.
-  - Config.h: Line 11: Link this with console manager
-  - Config.h: Line 19: Template this somehow
-  - Engine.cpp: Line 17: Make a ParseConfigs() function. Perhaps link this with other stuff? Display.cfg is also accessed in the renderer.
-  - Object.cpp: Line 3: EVERYTHING
-  - RendererOpenGL.cpp: Line 80: OpenGL 3.3 Update
-  - RendererOpenGL.cpp: Line 140: Make this a function
 - Game (Minor and virtually pointless):
 
 
 ### Changelog
-- 2-7-14:
-- Prepared for release:
-  - Fixed a few warnings/errors
-  - Redid the makefile to work in ANY directory.
-  - Removed needless Entity.cpp class inside src/ which was there for no particular reason.
-- 3-7-14:
-  - Created THIS changelog.
-  - Fixed filepaths containing '\' by replacing all '\' to '/'
-  - Updated SDL from 2.0.1 to 2.0.3
-  - Added launch message. Engine.h -> "virtual void LaunchMessage()"
-  - Added version control Globals.h --> "Global::ENGINE_VERSION" type std::string
-  - Added basic timer class
- - 4-7-14
-  - Version -> Alpha 0.02
-  - Implemented LinkedLists (TODO: Fix deletion, improve and add better iteration)
-  - Changed compilation to C++ 14. (-std=C++1y)
-  - Added a pointless linkedlist example to TestEntity.cpp DefaultProperties
-- 5-7-14
-  - Added SDL_ttf. (Yay more dependencies)
-    - libfreetype-6.dll
-	- SDL2_ttf.dll
-  - Added some minor TODOs.
-  - Version -> Alpha 0.03
-  - RendererBase.cpp/RendererBase.h:
-    - Added: Vector2 LocalToWorldVector(Vector2 in)
-    - Added: Vector2 WorldToLocalVector(Vector2 in)
-	- Self-explanatory, really.
-- 6-7-14
-  - Version -> Alpha 0.035
-  - Made SetRenderView(int x, int y); set the view at the CENTRE of the screen
-  - Added -Vector2 and -Vector2f operators.
-  - Found the cause of the jitter. Remember to use .ToInteger() with Vectors. Vector -> FloatVector conversions need to be improved.
-- 7-7-14
-  - Version -> Alpha 0.04
-  - Implemented SDL_mixer (badly?)
-  - Fixed font directory finding by making it use a base directory of the executable folder. (Only works in windows) (Bye bye multiple OS support for a while.)
-- 8-7-14
-  - Version -> Alpha 0.045
-  - Fixed vector magnitude functions. (Thanks Coi!)
-  - Fixed LinkedList deletion!
-- 20-7-14 / 21-7-14
-  - Version -> Alpha 0.05
-  - Added readme generation (python3) (23:59)
-  - Moved SDL_mixer out of RendererBase class. (0:30)
-  - Added lots of TODOS (1:05)
-- 21-7-14
-  - Version -> Alpha 0.055
-  - Fixed RenderView function. It is a lot easier to work with now.
-  - Gave Sprite class a purpose. (Already supports textures)
-  - Origin of sprite texture is the centre. (Is this bad?)
-- 24-7-14
-  - Implemented an FPS counter.
-  - Got sick of 60 fps and disabled VSync. (Everything experienced a spasm. Character was moving too fast, the tick function was in the render function and was called a the same rate!)
-  - Fixed a memory leak in SDLRenderer::RenderFont(). Surface and Texture was not being Freed/Destroyed. (First memory leak, found during the spasm as the render rate was so high!)
-  - Implemented Tick using Timer class to fix the spasm. (Gameplay is very smooth now).
-  - Added float LevelSpeed to Level.cpp
-  - Tick function now is Tick(float DeltaTime) (Multiply all movement with DeltaTime)
-  - Iterated through the game and made these changes to each Entity respectively.
-  - Whoa! 5000 fps when holding left to remove the other entities. This sure is cool! I bet you don't get 5000 fps playing Call of Duty! Hah!
-  - Updated Generation to include line numbers in the TODO list.
-- 27-7-14
-  - Added AnimationSprite class (Work in progress)
-  - Fixed a linkedlist bug, where iterate would attempt to call the lambda function when h_node->x is a nullpointer and the linkedlist is empty.
-  - Did not commit. (Started updating OpenGL)
-- 27-7-14
-  - Version -> Alpha 0.065
-  - OpenGL renderer dealt with. It is now functional and set to default. (It can be changed with one line of code. See: Engine::Initialize())
+- 22-8-15:
+  - Started this changelog
+  - Recoded the generation (for this) from the previously coded 2D engine to work with the 3D one
+  - Added .cfg support and implemented .cfg WindowedResolution and Fullscreen
+  - Realised windows MinGW g++ 4.8.1-4 doesn't support <regex> while trying to implement an obj file loader
+- 23-8-15:
+  - Implemented .obj support for models
+  - Implemented Model precaching
+- 4-9-15:
+  - Implemented GLFW and removed SDL2
+    - Forced to use MinGW-w64
+      - Project is now 64-Bit
+    - GLFW is much cleaner than SDL2
+    - OpenGL 3.3+ compatability contexts now work. (wow!)
+- 9-9-15:
+  - Edited compile.py to execute make with -j(threads*1.5) for lightning fast compile times. (Sadly linking is still slow)
+  - Edited makefile to use -pipe (apparently it improves the speed (or so stackoverflow says))
+- 16-9-15:
+  - Successfully added Precache functions for Models and Textures within the Renderer
+  - ModelInfo and TextureInfo structs created to hold information about a particular model or texture stored within GPU memory
+  - Successfully created CurrentTexture and CurrentModel hooks for the new class
+  - Moved the SheetDemo into SheetDemoComponent.cpp/h
+- 17-9-15:
+  - Fixed OpenGL texture parameter on texture preloading to prevent the weird red lines from showing up
+  - Added Model Normals to the GPU buffer objects. (For future lighting calculations)
+- 10-10-15:
+  - Coded a dynamic shader system with its own class. Shader.cpp
+- 11-10-15:
+  - Implemented OpenGL Vertex Array Objects
+    - ShaderHelper.hpp is no longer a dependency of RendererOpenGL.cpp
+- 20-10-15:
+  - Ported to GNU/Linux (Newer Version of GCC)
+- 8-11-15:
+  - Implemented viewport size changes on screen size changes using a lambda function. (ty C++11)
+- 14-11-15:
+  - Fixed Rotation coordinate system. Conjugated rotation quaternion before passing it into the view matrix AND recoded the forward, right and up vectors in ITransform
+  - Created a LookAt function in ITransform with an overload to specify an up vector to maintain upright after the change in direction (because Quaternions are horrible (In hindsight, they're much better than rotation matrices)
+- 15-11-15:
+  - Created a VolumeTimer class within Timer.h. This is a compact lambda function based timer. (Very useful)
+- 29-11-15:
+  - Implemented Assimp. Fixed normals and UVs
+  - Implemented PlayerShip in Game as a Spaceship game thing
+- 31-12-15:
+  - Implemented generics/templates for Entity and Component creation in Entity.h. AddComponent<Component>() and Spawn<Entity>() now work
+  - This AUTOMATICALLY typecasts the spawned class/component
+  - Moved the public Engine* GameEngine variable inside Object.h rather than in Entity.h, Input.h, RendererOpenGL.h individually
+  - It appears that Object.h now has a purpose. It controls code in ALL classes
+  - Implemented GetComponent<Component>() and GetComponents<Component>() in Entity.h for easy component retrieval and interaction
+  - Implemented PhysicsComponent.cpp/.h which hijacks the movement of the parent Entity. Implemented Linear Motion calculations with Mass and Velocity
+  - PhysicsComponent->ApplyForce() applies a force to a PhysicsComponent
+  - PhysicsComponent->Effector (poor variable naming?) By default it's the Owner. The PhysicsComponent can be owned and act upon different entities
+  - PhysicsComponent also has MaximumSpeed and VelocityDamping variables to cap the speed and make things easier to control
+  - CollisionComponent implemented. Only Sphere Collision works so far. Implemented object blocking in PlayerShip.cpp. (Ridiculous dot product vector mathematics and linear interpolation)
+- 1-1-16:
+  - Happy new year! Fixed lambda captures to capture the parent object. It turns out that [&] as a capture argument causes SegFaults
+  - Contemplating implementing a PostBeginPlay method within classes to fix a nasty collision bug where the initial location of the component is at O (Fixed it by moving the collision detection code to after the entity list has been refreshed in the main loop)
+- 2-1-16:
+  - Coded basic raytracing. Static methods in CollisionComponent.h and referenced in Entity.h for convenience
+  - All raytracing and collision related stuff has been moved to CollisionManager.h for convenience
+    - Moved raytracing and the rest of the collision code to CollisionManager.h
+  - Renamed Manager to GameEntityManager for clarity
+- 2-1-16:
+  - Implemented a ResourceManager. Moved rendering code to RenderComponent
+- 16-1-16:
+  - Fixed broken raytracing
+  - Removed PhysicsComponent->Effector variable. (What's the point? Effector is the owner by default.
+    - Why would a physics component induce physics on another object other than the owner? :P
+- 4-2-16:
+  - Fixed sphere collision deflection. No more collision leaks. It's built into the PhysicsComponent code.
+- 13-2-16:
+  - Moved component Render() before Tick() in the main loop. Parented components no longer lag behind.
+- 16-2-16:
+  - Implemented OpenAL. Sounds are now functional! :)
+  - Sound.h/.cpp added
+  - SoundManager.h/.cpp added
+  - New Components:
+    - SoundSourceComponent.h/.cpp
+    - SoundListenerComponent.h/.cpp
+- 17-2-16:
+  - Added a DeflectionUtil namespace in the CollisionManager. :) Deflection is now built into the collision code
+  - Removed many superfluous if(ptr == nullptr) unless it's truly necessary to explicitly state nullptr for the purpose of understanding
+- 10-3-16:
+  - Added a ShaderManager to improve the management of shaders. (is this really necessary?)
+  - Unfortunately, shaders now require precaching. This includes materials. (This could be fixed later?)
+  - I should port this back to windows, perhaps combine bin directories again
+- 11-3-16:
+  - alutLoadWAVFile() was deprecated. Updated WAV loading to the ALUT 1.1 CreateBufferFromWAVFile function
+  - Implemented firing animations in PlayerShip.cpp using glm::clamp()
+- 14-3-16:
+  - Split textures and shaders. The same shader instance can be used across multiple entities (saves GPU memory).
+- 8-12-17:
+  - Fixed DemoSheetComponent.cpp (Coded a brilliant inheritance hack to render the sphere multiple times)
+  - Forced OpenGL Core profile on linux, compatability causes a crash with modern glfw (3.2.1-1)
+  - Switched to C++17 compilation
+  - Recoded the linux build process to use pkg-config and a single Makefile
+  - Recoded gen/* It was very poorly written
+  - Removed the windows build process entirely (Hardly anyone uses MinGW32 on windows anyway. Little benefit in supporting Visual Studio)
+
